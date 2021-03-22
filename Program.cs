@@ -6,6 +6,11 @@ namespace PuppyApi
 {
     class Program
     {
+        class Puppy
+        {
+            public string message { get; set; }
+            public bool status { get; set; }
+        }
         static async Task Main(string[] args)
         {
             var client = new HttpClient();
