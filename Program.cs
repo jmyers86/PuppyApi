@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PuppyApi
@@ -8,17 +10,23 @@ namespace PuppyApi
     {
         class Puppy
         {
-            public string message { get; set; }
+            public Array message { get; set; }
             public bool status { get; set; }
         }
         static async Task Main(string[] args)
         {
             var client = new HttpClient();
 
-            // Random image
-            var responseAsString = await client.GetStringAsync("https://dog.ceo/api/breeds/image/random");
+            // All dog breeds
+            var responseAsStream = await client.GetStreamAsync("https://dog.ceo/api/breeds/list/all");
 
-            Console.WriteLine(responseAsString);
+            var breeds = await JsonSerializer.DeserializeAsync<List<Puppy>>(responseAsStream);
+
+            foreach (var breed in breeds)
+            {
+                Console.WriteLine(breed.message);
+            }
+            // Console.WriteLine(responseAsStream);
         }
     }
 }
