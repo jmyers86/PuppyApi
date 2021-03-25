@@ -31,16 +31,18 @@ namespace PuppyApi
         {
             var client = new HttpClient();
 
-            // All dog breeds
+            // First 20 breweries in list -by city.
             var responseAsStream = await client.GetStreamAsync("https://api.openbrewerydb.org/breweries");
 
             var breweries = await JsonSerializer.DeserializeAsync<List<Brewery>>(responseAsStream);
 
             foreach (var brewery in breweries)
             {
-                Console.WriteLine($"{brewery.name}, is a {brewery.brewery_type} brewery. It is located in {brewery.city}, {brewery.state}");
+                Console.WriteLine($"{brewery.name}, is a {brewery.brewery_type} brewery. It is located in {brewery.city}, {brewery.state}.");
+                Console.WriteLine($"Entry created on {brewery.created_at}. Last updated on {brewery.updated_at}.");
+
             }
-            // Console.WriteLine(responseAsStream);
+
         }
     }
 }
