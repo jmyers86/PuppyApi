@@ -4,11 +4,20 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using ConsoleTables;
 
 namespace PuppyApi
 {
     class Program
     {
+        static void MenuGreeting(string message)
+        {
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("Welcome to the Ultimate Brewery Directory");
+            Console.WriteLine();
+            Console.WriteLine("Below are the first 20 entries in our list:");
+        }
         class Brewery
         {
             [JsonPropertyName("name")]
@@ -46,20 +55,68 @@ namespace PuppyApi
         }
         static async Task Main(string[] args)
         {
+
+        }
+        static async Task BreweriesByState()
+        {
             var client = new HttpClient();
 
-            // First 20 breweries in list -by city.
+            // First 20 breweries in list -by State.
             var responseAsStream = await client.GetStreamAsync("https://api.openbrewerydb.org/breweries");
 
             var breweries = await JsonSerializer.DeserializeAsync<List<Brewery>>(responseAsStream);
 
+            var table = new ConsoleTable("Name", "Brewery Type", "City", "State", "Country", "Created On", "Updated On");
+
             foreach (var brewery in breweries)
             {
-                Console.WriteLine($"{brewery.Name}, is a {brewery.BreweryType} brewery. It is located in {brewery.City}, {brewery.State}.");
-                Console.WriteLine($"Entry created on {brewery.CreatedAt}. Last updated on {brewery.UpdatedAt}.");
-
+                table.AddRow(brewery.Name, brewery.BreweryType, brewery.City, brewery.State, brewery.Country, brewery.CreatedAt, brewery.UpdatedAt);
             }
 
+            table.Write();
+        }
+
+        static async Task BreweriesByCity()
+        {
+            var client = new HttpClient();
+
+            // First 20 breweries in Tampa.
+            var responseAsStream = await client.GetStreamAsync("https://api.openbrewerydb.org/breweries?by_city=tampa");
+
+            var breweries = await JsonSerializer.DeserializeAsync<List<Brewery>>(responseAsStream);
+
+            var table = new ConsoleTable("Name", "Brewery Type", "City", "State", "Country", "Created On", "Updated On");
+
+            foreach (var brewery in breweries)
+            {
+                table.AddRow(brewery.Name, brewery.BreweryType, brewery.City, brewery.State, brewery.Country, brewery.CreatedAt, brewery.UpdatedAt);
+            }
+
+            table.Write();
+        }
+
+
+        static int MenuPrompt(string prompt)
+        {
+            Console.WriteLine(prompt);
+            Console.WriteLine("1) List Breweries by State (Ascending)");
+            Console.WriteLine("2) List Breweries in Tampa (Ascending)");
+            Console.WriteLine("Type '0' to exit the program");
+            string input;
+            int value;
+            do
+            {
+                Console.Write(">");
+                input = Console.ReadLine();
+            } while (!int.TryParse(input, out value));
+            return value;
+        }
+        static string PromptForString(string prompt)
+        {
+            Console.WriteLine();
+            Console.WriteLine(prompt);
+            Console.Write("> ");
+            return Console.ReadLine();
         }
     }
 }
