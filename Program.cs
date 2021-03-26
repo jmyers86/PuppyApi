@@ -16,7 +16,7 @@ namespace PuppyApi
             Console.WriteLine();
             Console.WriteLine("Welcome to the Ultimate Brewery Directory");
             Console.WriteLine();
-            Console.WriteLine("{message}:");
+            Console.WriteLine(message);
         }
 
         class Brewery
@@ -69,10 +69,12 @@ namespace PuppyApi
                         break;
 
                     case 1:
-                        await BreweriesByState();
+                        MenuGreeting("Viewing Breweries listed by State."); // This only shows the first page (20) to a maximum of 50. I would be interested to implement 
+                        await BreweriesByState();                           // a multiple page feature in the future!
                         break;
 
                     case 2:
+                        MenuGreeting("Viewing Breweries in Tampa.");
                         await BreweriesInTampa();
                         break;
 
@@ -135,14 +137,6 @@ namespace PuppyApi
                 } while (!int.TryParse(input, out value));
                 return value;
             }
-
-            // static string PromptForString(string prompt)
-            // {
-            //     Console.WriteLine();
-            //     Console.WriteLine(prompt);
-            //     Console.Write("> ");
-            //     return Console.ReadLine();
-            // }
         }
     }
 }
